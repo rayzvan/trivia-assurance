@@ -1,23 +1,45 @@
-import { StatusBar } from 'expo-status-bar';
+import 'react-native-gesture-handler';
 import React from 'react';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { createStackNavigator } from '@react-navigation/stack';
+import HomeScreen from './src/screens/HomeScreen';
+import { NavigationContainer, NavigationAction } from '@react-navigation/native'
+import QuizScreen from './src/screens/QuizScreen';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import questionsReducer from './src/store/reducers/questions';
+import { Provider } from 'react-redux';
+import ReduxThunk from 'redux-thunk';//Enables us to use asynchornous code in redux actions
 
-import useCachedResources from './hooks/useCachedResources';
-import useColorScheme from './hooks/useColorScheme';
-import Navigation from './navigation';
+const Stack = createStackNavigator();
 
-export default function App() {
-  const isLoadingComplete = useCachedResources();
-  const colorScheme = useColorScheme();
+const rootReducer = combineReducers({
+  questions: questionsReducer
+})
 
-  if (!isLoadingComplete) {
-    return null;
-  } else {
-    return (
-      <SafeAreaProvider>
-        <Navigation colorScheme={colorScheme} />
-        <StatusBar />
-      </SafeAreaProvider>
-    );
-  }
+const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
+
+const RootStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{ title: 'Home' }} />
+      <Stack.Screen
+        name="Quiz"
+        component={QuizScreen}
+        options={{ title: 'Quiz' }} />
+    </Stack.Navigator>
+  )
+}
+
+// export default RootStack;
+
+export default () => {
+  return (
+    <Provider store={store}>
+      <NavigationContainer>
+        <RootStack />
+      </NavigationContainer>
+    </Provider>
+  )
 }
