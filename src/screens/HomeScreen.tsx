@@ -1,14 +1,49 @@
-import React, { useContext } from "react";
-import { View, StyleSheet, Text, TouchableOpacity, Button, ColorValue } from "react-native";
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import { View, StyleSheet, Text, TouchableOpacity, Button, ColorValue, ActivityIndicator } from "react-native";
 import { Button as ElementButton } from 'react-native-elements';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { useDispatch, useSelector } from "react-redux";
+import { fetchQuestions } from "../store/actions/questions";
+import { Colors } from "react-native/Libraries/NewAppScreen";
+import { Question } from "../models/Question";
 // import { TouchableOpacity } from "react-native-gesture-handler";
 
 const HomeScreen = ({ navigation }: any) => {
-    //   const { signout } = useContext(AuthContext);
+    const [isLoading, setIsLoading] = useState(false);//use from reducer
+    const dispatch = useDispatch();
+
+    const { questions, isLoding } = useSelector((state: { quiz: { questions: Array<Question>, isLoding: boolean } }) => state.quiz);
+    // console.log(questions)
+
+    const loadQuestions = useCallback(async () => {
+        setIsLoading(true);
+        try {
+            await dispatch(fetchQuestions());
+
+        } catch (err) {
+
+        }
+        setIsLoading(false);
+    }, [dispatch, setIsLoading]);
+
+    useEffect(() => {
+        loadQuestions();
+    }, [dispatch, loadQuestions]);
+
+    if (isLoading) {
+        return <View style={styles.container}>
+            <ActivityIndicator size='large' color={Colors.primpary} />
+        </View>
+    }
+
+    // if (!isLoading && questions.length === 0) {
+    //     return <View style={styles.container}>
+    //         <Text>The questions could not be retrieved</Text>
+    //     </View>
+    // }
 
     return (
-        <View style={styles.viewStyle}>
+        <View style={{ ...styles.container, marginBottom: 250 }}>
             <TouchableOpacity style={styles.buttonStyle} >
                 <Button onPress={() => (navigation.push('Quiz'))} title="Start Quiz" />
             </TouchableOpacity>
@@ -21,11 +56,10 @@ const HomeScreen = ({ navigation }: any) => {
 };
 
 const styles = StyleSheet.create({
-    viewStyle: {
+    container: {
         flex: 1,
         justifyContent: 'center',
         margin: 15,
-        marginBottom: 250
     },
     buttonStyle: {
         height: 50,

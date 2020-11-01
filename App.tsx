@@ -12,7 +12,7 @@ import ReduxThunk from 'redux-thunk';//Enables us to use asynchornous code in re
 const Stack = createStackNavigator();
 
 const rootReducer = combineReducers({
-  questions: questionsReducer
+  quiz: questionsReducer
 })
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));

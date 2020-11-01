@@ -12,7 +12,7 @@ const fetchQuestionsStart = (state: { questions: Array<Question>, isLoading: boo
 }
 
 const fetchQuestionsSuccess = (state: { questions: Array<Question>, isLoading: boolean }, action: any): { questions: Array<Question>, isLoading: boolean } => {
-    console.log('******* SUCCESS WAS CALLED *******')
+    // console.log('******* SUCCESS WAS CALLED *******', action.questions);
     return { ...state, questions: action.questions, isLoading: false };
 }
 

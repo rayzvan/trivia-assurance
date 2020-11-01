@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import { TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handler';
 
-const QuizPossibleAnswer = ({ description, title, containerStyle }: any) => {
+const QuizPossibleAnswer = ({ description, title, containerStyle, selected: { isSelected, index }, onClick }: any) => {
+
+    const backgroundColor = isSelected ? '#E8E8E8' : 'white';
+    const mainStyle = isSelected ? styles.selectedContainer : styles.mainContainer;
+
     return (
-        <View style={{ ...styles.mainContainer, ...containerStyle }}>
-            <TouchableOpacity >
+        <View style={{ ...mainStyle, ...containerStyle, backgroundColor }}>
+            <TouchableOpacity activeOpacity={1} onPress={() => onClick(index)}>
                 <View style={styles.container}>
-                    <Text style={styles.titleStyle}>A</Text>
-                    <Text style={styles.descriptionStyle}>This is a text to test the answer posibilities bla bla and see how it looks in the screen if the txt is long because it may need to be long since this is what we discussed with Alin</Text>
+                    <Text style={styles.titleStyle}>{title}</Text>
+                    <Text style={styles.descriptionStyle}>{description}</Text>
                 </View>
             </TouchableOpacity>
         </View>
@@ -17,8 +21,20 @@ const QuizPossibleAnswer = ({ description, title, containerStyle }: any) => {
 
 
 const styles = StyleSheet.create({
+    selectedContainer: {
+        marginLeft: -3,
+        marginRight: -3,
+        flexDirection: 'row',
+        borderRadius: 10,
+        borderWidth: 0.3,
+        shadowOffset: {
+            height: 4,
+            width: 3
+        },
+        shadowOpacity: 0.6,
+        shadowRadius: 2
+    },
     mainContainer: {
-        backgroundColor: 'white',
         flexDirection: 'row',
         borderRadius: 10,
         borderWidth: 0.3,
@@ -27,32 +43,20 @@ const styles = StyleSheet.create({
             width: 1
         },
         shadowOpacity: 0.3,
-        shadowRadius: 2,
-        // flex:1,
-        // flexWrap: 'wrap'
-        // justifyContent: 'center',
-        // alignItems: 'center'
+        shadowRadius: 2
     },
     container: {
-        // flex: 1,
-        // flexGrow:1,
-        // alignSelf: 'flex-start',
         justifyContent: 'center',
         flexDirection: 'row',
         alignItems: 'center',
         padding: 15
-        // flexWrap: 'wrap'
     },
     titleStyle: {
-        // flex: 1,
         color: 'black',
-        fontSize: 18,
-        // flexWrap: 'wrap'
+        fontSize: 18
     },
     descriptionStyle: {
-        // flex: 1,
-        marginLeft: 18,
-        // flexWrap: 'wrap'
+        marginLeft: 18
     }
 })
 

@@ -2,23 +2,23 @@ import { Question } from "./src/models/Question";
 
 export default [
     {
-        id: Math.random() * 100,
+        id: Math.ceil(Math.random() * 10000),
         description: 'THis is the first question',
         possibleAnswers: [
-            { 'A': 'This is the first possible answer to the dilema' },
-            { 'B': 'This is the second possible answer to the dilema' },
-            { 'C': 'This is the third possible answer to the dilema' }
+            'This is the first possible answer to the dilema',
+            'This is the second possible answer to the dilema',
+            'This is the third possible answer to the dilema'
         ],
-        correctAnswers: ['B']
+        correctIndexAnswers: [1]
     },
     {
-        id: Math.random() * 100,
+        id:  Math.ceil(Math.random() * 10000),
         description: 'THis is the second question',
         possibleAnswers: [
-            { 'A': 'This is the second for the first possible answer to the dilema' },
-            { 'B': 'This is the second for the second possible answer to the dilema' },
-            { 'C': 'This is the second for the third possible answer to the dilema' }
+            'This is the second for the first possible answer to the dilema',
+            'This is the second for the second possible answer to the dilema',
+            'This is the second for the third possible answer to the dilema'
         ],
-        correctAnswers: ['A', 'C']
+        correctIndexAnswers: [0, 2]
     }
 ] as Array<Question>;
