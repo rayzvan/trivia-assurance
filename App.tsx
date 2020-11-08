@@ -3,11 +3,12 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from './src/screens/HomeScreen';
 import { NavigationContainer, NavigationAction } from '@react-navigation/native'
-import QuizScreen from './src/screens/QuizScreen';
+import QuizScreen, { screenOptions } from './src/screens/QuizScreen';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import questionsReducer from './src/store/reducers/questions';
 import { Provider } from 'react-redux';
 import ReduxThunk from 'redux-thunk';//Enables us to use asynchornous code in redux actions
+import { Alert, Button, Text, TouchableOpacity } from 'react-native';
 
 const Stack = createStackNavigator();
 
@@ -27,7 +28,7 @@ const RootStack = () => {
       <Stack.Screen
         name="Quiz"
         component={QuizScreen}
-        options={{ title: 'Quiz' }} />
+        options={screenOptions} />
     </Stack.Navigator>
   )
 }

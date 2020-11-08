@@ -25,7 +25,7 @@ export const fetchQuestionsFailed = (error: any) => {
 export const fetchQuestions = () => {
     return async(dispatch: any) => {
         //await get data from server
-        await sleep(3000);
+        await sleep(300);
         // console.log('***** FETCH START WAS CALLED *****');
         dispatch(fetchQuestionsSuccess(quizQuestions))
     }

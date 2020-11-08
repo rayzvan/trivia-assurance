@@ -2,10 +2,18 @@ import React, { useState } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import { TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handler';
 
-const QuizPossibleAnswer = ({ description, title, containerStyle, selected: { isSelected, index }, onClick }: any) => {
+const QuizPossibleAnswer = ({ description, title, containerStyle, correct, wrong, selected: { isSelected, index }, onClick }: any) => {
 
-    const backgroundColor = isSelected ? '#E8E8E8' : 'white';
     const mainStyle = isSelected ? styles.selectedContainer : styles.mainContainer;
+    let backgroundColor = 'white';
+    if (isSelected && wrong) {
+        backgroundColor = '#E53935';
+    } else if (correct) {
+        backgroundColor = '#66BB6A';
+    }
+    else if (isSelected) {
+        backgroundColor = '#BBDEFB';
+    }
 
     return (
         <View style={{ ...mainStyle, ...containerStyle, backgroundColor }}>

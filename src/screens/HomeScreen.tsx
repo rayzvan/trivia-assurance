@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchQuestions } from "../store/actions/questions";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { Question } from "../models/Question";
+import AlertContainer from "../components/alert/AlertContainer";
 // import { TouchableOpacity } from "react-native-gesture-handler";
 
 const HomeScreen = ({ navigation }: any) => {
@@ -13,7 +14,6 @@ const HomeScreen = ({ navigation }: any) => {
     const dispatch = useDispatch();
 
     const { questions, isLoding } = useSelector((state: { quiz: { questions: Array<Question>, isLoding: boolean } }) => state.quiz);
-    // console.log(questions)
 
     const loadQuestions = useCallback(async () => {
         setIsLoading(true);
@@ -36,11 +36,11 @@ const HomeScreen = ({ navigation }: any) => {
         </View>
     }
 
-    // if (!isLoading && questions.length === 0) {
-    //     return <View style={styles.container}>
-    //         <Text>The questions could not be retrieved</Text>
-    //     </View>
-    // }
+    if (!isLoading && questions.length === 0) {
+        return <View style={styles.container}>
+            <Text>The questions could not be retrieved</Text>
+        </View>
+    }
 
     return (
         <View style={{ ...styles.container, marginBottom: 250 }}>
@@ -50,7 +50,6 @@ const HomeScreen = ({ navigation }: any) => {
             {/* <TouchableOpacity style={styles.buttonStyle} >
                 <Button title="History" />
             </TouchableOpacity> */}
-            {/* <Button style={styles.buttonStyle} title="History"/> */}
         </View>
     );
 };
