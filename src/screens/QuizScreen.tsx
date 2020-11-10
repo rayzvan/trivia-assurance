@@ -8,6 +8,7 @@ import { NavigationProp, Route } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { StackNavigationOptions } from "@react-navigation/stack";
 import AlertContainer from "../components/alert/AlertContainer";
+import { Answer } from "../models/Anwer";
 
 const QuizScreen = ({ route, navigation }: any) => {
 
@@ -23,14 +24,35 @@ const QuizScreen = ({ route, navigation }: any) => {
         setIsAnswerSelected(true);
     }
 
+    const possibleAnswers = questions[index].possibleAnswers.map((possibleAnswer: Answer, possibleAnserIndex: number) => {
+        let wrongAnswerd;
+        let isCorrectAnswer;
+        if (wrongAnswerSelected) {
+            wrongAnswerd = selectedAnswers[possibleAnserIndex];
+            isCorrectAnswer = possibleAnserIndex === questions[index].correctIndexAnswer;
+        }
+        return (
+            <QuizPossibleAnswer
+                key={possibleAnswer.letter}
+                onClick={selectedAnswerHandler}
+                containerStyle={styles.quizAnswerStyle}
+                selected={{ isSelected: selectedAnswers[possibleAnserIndex], index: possibleAnserIndex }}
+                content={possibleAnswer.content}
+                title={possibleAnswer.letter}
+                wrong={wrongAnswerd}
+                correct={isCorrectAnswer}
+            />
+        )
+    })
+
     const selectNextHandler = () => {
         if (!wrongAnswerSelected) {
             const question = questions[index];
             selectedAnswers.forEach((answer, index: number) => {
-                if (!answer && question.correctIndexAnswers.find(item => item === index) && !wrongAnswerSelected) {
+                if (!answer && question.correctIndexAnswer === index && !wrongAnswerSelected) {
                     setWrongAnswerSelected(true);
                 }
-                if (answer && !question.correctIndexAnswers.find(item => item === index) && !wrongAnswerSelected) {
+                if (answer && !(question.correctIndexAnswer === index) && !wrongAnswerSelected) {
                     setWrongAnswerSelected(true);
                 }
             })
@@ -47,7 +69,8 @@ const QuizScreen = ({ route, navigation }: any) => {
                 questionNumber={index + 1}
                 noOfCorrectAnswers={0}
                 noOfWrongAnswers={0} />
-            <QuizPossibleAnswer
+            {possibleAnswers}
+            {/* <QuizPossibleAnswer
                 onClick={selectedAnswerHandler}
                 containerStyle={styles.quizAnswerStyle}
                 selected={{ isSelected: selectedAnswers[0], index: 0 }}
@@ -64,7 +87,7 @@ const QuizScreen = ({ route, navigation }: any) => {
                 containerStyle={styles.quizAnswerStyle}
                 selected={{ isSelected: selectedAnswers[2], index: 2 }}
                 description={questions[index].possibleAnswers[2]}
-                title={"C"} />
+                title={"C"} /> */}
             <View style={styles.buttomStyle}>
                 <TouchableOpacity disabled={!isAnswerSelected} onPress={selectNextHandler} style={styles.nextButtonStyle} >
                     <Button disabled={!isAnswerSelected} onPress={() => null} title="Next" />
