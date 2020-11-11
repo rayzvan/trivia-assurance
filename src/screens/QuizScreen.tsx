@@ -2,21 +2,25 @@ import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Button, Alert } from "react-native";
 import QuizHeader from "../components/quiz/QuizHeader";
 import QuizPossibleAnswer from "../components/quiz/QuizPossibleAnswer";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Question } from "../models/Question";
 import { NavigationProp, Route } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { StackNavigationOptions } from "@react-navigation/stack";
 import AlertContainer from "../components/alert/AlertContainer";
 import { Answer } from "../models/Anwer";
+import { UserAnswers } from "../models/UserAnswers";
+import { userAnswersAddRightAnswer, userAnswersAddWrongAnswer } from "../store/actions/userAnswers";
 
 const QuizScreen = ({ route, navigation }: any) => {
 
     const index: number = route.params?.questionIndex ?? 0;
 
+    const dispatch = useDispatch();
     const [selectedAnswers, setSelectedAnswers] = useState([false, false, false]);
     const [wrongAnswerSelected, setWrongAnswerSelected] = useState(false);
     const { questions } = useSelector((state: { quiz: { questions: Array<Question> } }) => state.quiz);
+    const { userAnswers } = useSelector((state: { userScore: { userAnswers: UserAnswers } }) => state.userScore);
     const [isAnswerSelected, setIsAnswerSelected] = useState(false);
 
     const selectedAnswerHandler = (selectedIndex: number) => {
@@ -31,6 +35,7 @@ const QuizScreen = ({ route, navigation }: any) => {
             wrongAnswerd = selectedAnswers[possibleAnserIndex];
             isCorrectAnswer = possibleAnserIndex === questions[index].correctIndexAnswer;
         }
+
         return (
             <QuizPossibleAnswer
                 key={possibleAnswer.letter}
@@ -41,24 +46,36 @@ const QuizScreen = ({ route, navigation }: any) => {
                 title={possibleAnswer.letter}
                 wrong={wrongAnswerd}
                 correct={isCorrectAnswer}
+                disabled={wrongAnswerSelected}
             />
         )
     })
 
     const selectNextHandler = () => {
-        if (!wrongAnswerSelected) {
-            const question = questions[index];
-            selectedAnswers.forEach((answer, index: number) => {
-                if (!answer && question.correctIndexAnswer === index && !wrongAnswerSelected) {
-                    setWrongAnswerSelected(true);
-                }
-                if (answer && !(question.correctIndexAnswer === index) && !wrongAnswerSelected) {
-                    setWrongAnswerSelected(true);
-                }
-            })
-        } else {
-            // GO TO NEXT PAGE
+        if (wrongAnswerSelected) {
+            navigation.push('Quiz', { questionIndex: index + 1 });
+            //TODO add this at the begining of the screen and send it as param because it can be seen when navigatiing
+            dispatch(userAnswersAddWrongAnswer());
+            return;
         }
+        const question = questions[index];
+        let isWrongAnsweredSelected = false;
+        selectedAnswers.forEach((answer, index: number) => {
+            if (!answer && question.correctIndexAnswer === index && !wrongAnswerSelected) {
+                isWrongAnsweredSelected = true;
+            }
+            if (answer && !(question.correctIndexAnswer === index) && !wrongAnswerSelected) {
+                isWrongAnsweredSelected = true;
+            }
+        })
+        if (!isWrongAnsweredSelected) {
+            navigation.push('Quiz', { questionIndex: index + 1 });
+            dispatch(userAnswersAddRightAnswer());
+            //TODO INVESTIAGETE WHY IF NO RETURN, THEN IS CALLED AGAIN? BECAUSE OF RE-RENDERS??
+            return;
+        }
+        setWrongAnswerSelected(true);
+
     }
 
     return (
@@ -67,27 +84,9 @@ const QuizScreen = ({ route, navigation }: any) => {
             <QuizHeader
                 containerStyle={styles.quizHeaderStyle}
                 questionNumber={index + 1}
-                noOfCorrectAnswers={0}
-                noOfWrongAnswers={0} />
+                noOfCorrectAnswers={userAnswers.noOfCorrectAnswers}
+                noOfWrongAnswers={userAnswers.noOfWrongAnswers} />
             {possibleAnswers}
-            {/* <QuizPossibleAnswer
-                onClick={selectedAnswerHandler}
-                containerStyle={styles.quizAnswerStyle}
-                selected={{ isSelected: selectedAnswers[0], index: 0 }}
-                description={questions[index].possibleAnswers[0]}
-                title={"A"} />
-            <QuizPossibleAnswer
-                onClick={selectedAnswerHandler}
-                containerStyle={styles.quizAnswerStyle}
-                selected={{ isSelected: selectedAnswers[1], index: 1 }}
-                description={questions[index].possibleAnswers[1]}
-                title={"B"} />
-            <QuizPossibleAnswer
-                onClick={selectedAnswerHandler}
-                containerStyle={styles.quizAnswerStyle}
-                selected={{ isSelected: selectedAnswers[2], index: 2 }}
-                description={questions[index].possibleAnswers[2]}
-                title={"C"} /> */}
             <View style={styles.buttomStyle}>
                 <TouchableOpacity disabled={!isAnswerSelected} onPress={selectNextHandler} style={styles.nextButtonStyle} >
                     <Button disabled={!isAnswerSelected} onPress={() => null} title="Next" />

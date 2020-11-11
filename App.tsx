@@ -9,11 +9,13 @@ import questionsReducer from './src/store/reducers/questions';
 import { Provider } from 'react-redux';
 import ReduxThunk from 'redux-thunk';//Enables us to use asynchornous code in redux actions
 import { Alert, Button, Text, TouchableOpacity } from 'react-native';
+import userAnswersReducer from './src/store/reducers/userAnswers';
 
 const Stack = createStackNavigator();
 
 const rootReducer = combineReducers({
-  quiz: questionsReducer
+  quiz: questionsReducer,
+  userScore: userAnswersReducer
 })
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));

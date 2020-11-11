@@ -7,6 +7,7 @@ import { fetchQuestions } from "../store/actions/questions";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { Question } from "../models/Question";
 import AlertContainer from "../components/alert/AlertContainer";
+import { userAnswersClear } from "../store/actions/userAnswers";
 // import { TouchableOpacity } from "react-native-gesture-handler";
 
 const HomeScreen = ({ navigation }: any) => {
@@ -19,7 +20,7 @@ const HomeScreen = ({ navigation }: any) => {
         setIsLoading(true);
         try {
             await dispatch(fetchQuestions());
-
+            // dispatch(userAnswersClear());
         } catch (err) {
 
         }

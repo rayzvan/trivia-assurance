@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import { TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handler';
 
-const QuizPossibleAnswer = ({ content, title, containerStyle, correct, wrong, selected: { isSelected, index }, onClick }: any) => {
+const QuizPossibleAnswer = ({ content, title, containerStyle, correct, wrong, selected: { isSelected, index }, onClick, disabled }: any) => {
 
     const mainStyle = isSelected ? styles.selectedContainer : styles.mainContainer;
     let backgroundColor = 'white';
@@ -17,7 +17,7 @@ const QuizPossibleAnswer = ({ content, title, containerStyle, correct, wrong, se
 
     return (
         <View style={{ ...mainStyle, ...containerStyle, backgroundColor }}>
-            <TouchableOpacity activeOpacity={1} onPress={() => onClick(index)}>
+            <TouchableOpacity disabled={disabled} activeOpacity={1} onPress={() => onClick(index)}>
                 <View style={styles.container}>
                     <Text style={styles.titleStyle}>{title}</Text>
                     <Text style={styles.descriptionStyle}>{content}</Text>
