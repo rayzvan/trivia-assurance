@@ -1,10 +1,10 @@
 import React from 'react';
 import { Image, Text, View, StyleSheet } from 'react-native';
 
-const QuizHeader = ({ questionNumber, noOfCorrectAnswers, noOfWrongAnswers, containerStyle }: any) => {
+const QuizHeader = ({ questionNumber, noOfCorrectAnswers, noOfWrongAnswers, containerStyle, noOfQuestions }: any) => {
     return (
         <View style={{ ...styles.container, ...containerStyle }}>
-            <Text style={styles.titleStyle}>{questionNumber}/50</Text>
+            <Text style={styles.titleStyle}>{questionNumber}/{noOfQuestions}</Text>
             <Text style={styles.correctStyle}>{noOfCorrectAnswers}</Text>
             <Text style={styles.wrongStyle}>{noOfWrongAnswers}</Text>
         </View>

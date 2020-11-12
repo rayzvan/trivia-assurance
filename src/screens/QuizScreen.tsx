@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Button, Alert } from "react-native";
+import { View, StyleSheet, Button, Alert, Text } from "react-native";
 import QuizHeader from "../components/quiz/QuizHeader";
 import QuizPossibleAnswer from "../components/quiz/QuizPossibleAnswer";
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,6 +15,7 @@ import { userAnswersAddRightAnswer, userAnswersAddWrongAnswer } from "../store/a
 const QuizScreen = ({ route, navigation }: any) => {
 
     const index: number = route.params?.questionIndex ?? 0;
+    const wasCorrectAnswer = route.params?.wasCorrectAnswer;
 
     const dispatch = useDispatch();
     const [selectedAnswers, setSelectedAnswers] = useState([false, false, false]);
@@ -22,6 +23,15 @@ const QuizScreen = ({ route, navigation }: any) => {
     const { questions } = useSelector((state: { quiz: { questions: Array<Question> } }) => state.quiz);
     const { userAnswers } = useSelector((state: { userScore: { userAnswers: UserAnswers } }) => state.userScore);
     const [isAnswerSelected, setIsAnswerSelected] = useState(false);
+
+    useEffect(() => {
+        if (index > 0) {
+            //TODO This should be switched. See why is not working proeprly
+            wasCorrectAnswer === false
+                ? dispatch(userAnswersAddRightAnswer())
+                : dispatch(userAnswersAddWrongAnswer())
+        }
+    }, [dispatch])
 
     const selectedAnswerHandler = (selectedIndex: number) => {
         setSelectedAnswers(selectedAnswers.map((item, index: number) => index === selectedIndex));
@@ -52,10 +62,12 @@ const QuizScreen = ({ route, navigation }: any) => {
     })
 
     const selectNextHandler = () => {
+        if (questions.length === index + 1) {
+            navigation.navigate('Home');
+            return;
+        }
         if (wrongAnswerSelected) {
-            navigation.push('Quiz', { questionIndex: index + 1 });
-            //TODO add this at the begining of the screen and send it as param because it can be seen when navigatiing
-            dispatch(userAnswersAddWrongAnswer());
+            navigation.push('Quiz', { questionIndex: index + 1, wasCorrectAnswer: false });
             return;
         }
         const question = questions[index];
@@ -69,13 +81,11 @@ const QuizScreen = ({ route, navigation }: any) => {
             }
         })
         if (!isWrongAnsweredSelected) {
-            navigation.push('Quiz', { questionIndex: index + 1 });
-            dispatch(userAnswersAddRightAnswer());
+            navigation.push('Quiz', { questionIndex: index + 1, wasCorrectAnswer: true });
             //TODO INVESTIAGETE WHY IF NO RETURN, THEN IS CALLED AGAIN? BECAUSE OF RE-RENDERS??
             return;
         }
         setWrongAnswerSelected(true);
-
     }
 
     return (
@@ -84,8 +94,10 @@ const QuizScreen = ({ route, navigation }: any) => {
             <QuizHeader
                 containerStyle={styles.quizHeaderStyle}
                 questionNumber={index + 1}
+                noOfQuestions={questions.length}
                 noOfCorrectAnswers={userAnswers.noOfCorrectAnswers}
                 noOfWrongAnswers={userAnswers.noOfWrongAnswers} />
+            <Text style={styles.descriptionStyle}>{questions[index].description}</Text>
             {possibleAnswers}
             <View style={styles.buttomStyle}>
                 <TouchableOpacity disabled={!isAnswerSelected} onPress={selectNextHandler} style={styles.nextButtonStyle} >
@@ -128,6 +140,12 @@ const styles = StyleSheet.create({
         flex: 1,
         // justifyContent: 'flex-start',
         margin: 18
+    },
+    descriptionStyle: {
+        marginVertical: 20,
+        fontSize: 20,
+        color: 'black',
+        textAlign: 'center'
     },
     buttomStyle: {
         flex: 1,

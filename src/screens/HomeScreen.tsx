@@ -46,7 +46,13 @@ const HomeScreen = ({ navigation }: any) => {
     return (
         <View style={{ ...styles.container, marginBottom: 250 }}>
             <TouchableOpacity style={styles.buttonStyle} >
-                <Button onPress={() => (navigation.push('Quiz'))} title="Start Quiz" />
+                <Button
+                    title="Start Quiz"
+                    onPress={() => {
+                        dispatch(userAnswersClear());
+                        navigation.push('Quiz')
+                    }}
+                />
             </TouchableOpacity>
             {/* <TouchableOpacity style={styles.buttonStyle} >
                 <Button title="History" />

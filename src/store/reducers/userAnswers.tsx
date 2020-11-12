@@ -11,11 +11,11 @@ const userAnswersClear = (state: { userAnswers: UserAnswers }, action: any): { u
 }
 
 const userAnswersAddCorrectAnswer = (state: { userAnswers: UserAnswers }, action: any): { userAnswers: UserAnswers } => {
-    return { ...state, userAnswers: { noOfWrongAnswers: state.userAnswers.noOfCorrectAnswers + 1, noOfCorrectAnswers: state.userAnswers.noOfCorrectAnswers } };
+    return { ...state, userAnswers: { noOfWrongAnswers: state.userAnswers.noOfWrongAnswers + 1, noOfCorrectAnswers: state.userAnswers.noOfCorrectAnswers } };
 }
 
 const userAnswersAddWrongAnswer = (state: { userAnswers: UserAnswers }, action: any): { userAnswers: UserAnswers } => {
-    return { ...state, userAnswers: { noOfWrongAnswers: state.userAnswers.noOfCorrectAnswers, noOfCorrectAnswers: state.userAnswers.noOfCorrectAnswers + 1 } };
+    return { ...state, userAnswers: { noOfWrongAnswers: state.userAnswers.noOfWrongAnswers, noOfCorrectAnswers: state.userAnswers.noOfCorrectAnswers + 1 } };
 }
 
 const userAnswersReducer = (state = initialState, action: { type: string }): { userAnswers: UserAnswers } => {
